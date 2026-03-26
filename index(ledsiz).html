@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEYZANUR VLOG</title>
+    <style>
+        body { 
+            background-color: #F5F5DC; 
+            color: #000033; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; 
+            margin: 0; 
+            padding: 0; 
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Arka Plan Dokusu */
+        .arka-plan-dokusu {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.1;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+            grid-template-rows: repeat(auto-fill, minmax(45px, 1fr));
+            gap: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+            font-size: 1.3rem;
+            color: #FFFFFF;
+            user-select: none;
+        }
+
+        .ikon { display: flex; justify-content: center; align-items: center; }
+
+        header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            background-color: #000033;
+            display: flex;
+            align-items: center;
+            padding: 15px 30px;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Logo Alanı - Kitap Silindi, Sadece Yazı Var */
+        .logo-alani {
+            cursor: pointer;
+            /* Yazıyı dikeyde ortalamak için hafif ayar */
+            transform: translateY(-1px); 
+        }
+
+        .logo-yazi { 
+            font-size: 1.4rem; 
+            letter-spacing: 2px; 
+            margin: 0; 
+            white-space: nowrap; 
+            color: #FFFFFF;
+            font-weight: bold;
+            /* Parlama ve gölgeler yok */
+            text-shadow: none; 
+        }
+
+        nav { display: flex; gap: 20px; margin: 0 auto; }
+
+        nav button {
+            background: none;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #FFFFFF !important; 
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        nav button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .bolum { padding-top: 100px; padding-bottom: 50px; display: none; position: relative; z-index: 10; }
+        .aktif { display: block !important; }
+
+        .bolum-baslik { 
+            color: #000033; 
+            padding: 10px 40px; 
+            display: inline-block; 
+            font-size: 1.6rem; 
+            margin: 20px 0; 
+            text-transform: uppercase;
+            font-weight: bold;
+            background-color: #F5F5DC;
+            border-radius: 50px;
+        }
+
+        .galeri { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; padding: 20px; }
+
+        .kart { 
+            background: rgba(250, 250, 240, 0.98); 
+            padding: 12px; 
+            border-radius: 15px; 
+            border: 1px solid #DCDCDC; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+            overflow: hidden; 
+            transition: 0.3s ease;
+        }
+
+        .kart img { 
+            width: 100%; 
+            border-radius: 10px; 
+            display: block; 
+            height: auto; 
+            transition: 0.4s ease;
+        }
+
+        .kart:hover img { transform: scale(1.02); }
+    </style>
+</head>
+<body>
+
+    <div id="arkaPlanDokusu" class="arka-plan-dokusu"></div>
+
+    <header>
+        <div class="logo-alani" onclick="location.reload()">
+            <div class="logo-yazi">BEYZANUR VLOG</div>
+        </div>
+        <nav>
+            <button onclick="bolumDegistir('yazarlar-bolumu')">✒️ YAZARLARIMIZ</button>
+            <button onclick="bolumDegistir('eserler-bolumu')">📖 ESERLERİMİZ</button>
+        </nav>
+    </header>
+
+    <div id="yazarlar-bolumu" class="bolum aktif">
+        <div class="bolum-baslik">✒️ YAZARLARIMIZ</div>
+        <div id="yazarlar-galeri" class="galeri"></div>
+    </div>
+
+    <div id="eserler-bolumu" class="bolum">
+        <div class="bolum-baslik">📖 ESERLERİMİZ</div>
+        <div id="eserler-galeri" class="galeri"></div>
+    </div>
+
+    <script>
+        const base = "1774539616720-ab570c70-dd49-4001-92c9-e7ad6553f8e4_";
+        const yazarNolar = [1, 6, 16, 18, 22, 25, 29];
+        const eserNolar = [2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 19, 20, 21, 23, 24, 26, 27, 28, 30];
+
+        function arkaPlaniDoldur() {
+            const dokuContainer = document.getElementById('arkaPlanDokusu');
+            const sembolHavuzu = ['📖', '📚', '🖋️', '📜', '📓', '✍️', '🔖', '📔', '📒'];
+            const hucreSayisi = Math.ceil((window.innerWidth * window.innerHeight) / (45 * 45)); 
+
+            for (let i = 0; i < hucreSayisi; i++) {
+                const ikonDiv = document.createElement('div');
+                ikonDiv.className = 'ikon';
+                ikonDiv.textContent = sembolHavuzu[Math.floor(Math.random() * sembolHavuzu.length)];
+                dokuContainer.appendChild(ikonDiv);
+            }
+        }
+
+        function galeriKur(idListesi, containerId) {
+            const container = document.getElementById(containerId);
+            idListesi.forEach(n => {
+                const kart = document.createElement('div');
+                kart.className = 'kart';
+                kart.innerHTML = `<img src="./img/${base}${n}.png" onerror="this.parentElement.style.display='none'">`;
+                container.appendChild(kart);
+            });
+        }
+
+        function bolumDegistir(id) {
+            document.querySelectorAll('.bolum').forEach(b => b.classList.remove('aktif'));
+            document.getElementById(id).classList.add('aktif');
+            window.scrollTo(0, 0);
+        }
+
+        window.onload = function() {
+            arkaPlaniDoldur();
+            galeriKur(yazarNolar, 'yazarlar-galeri');
+            galeriKur(eserNolar, 'eserler-galeri');
+        };
+
+        window.onresize = function() {
+            document.getElementById('arkaPlanDokusu').innerHTML = '';
+            arkaPlaniDoldur();
+        };
+    </script>
+</body>
+</html>
