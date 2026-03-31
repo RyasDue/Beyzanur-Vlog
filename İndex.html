@@ -5,84 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ERZİNCANIN KALEMLERİ</title>
     <style>
-        body { background-color: #F5F5DC; color: #000033; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin: 0; }
-        
-        /* Header Ayarları */
-        header { 
-            background: #000033; 
-            color: white; 
-            padding: 15px; 
-            display: none; 
-            position: fixed; 
-            width: 100%; 
-            top: 0; 
-            z-index: 100; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-
-        /* Giriş Ekranı */
-        #giris-ekrani { 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            align-items: center; 
-        }
-
-        .menu-izgara { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; max-width: 500px; }
-        
-        .menu-kart { 
-            background: #000033; 
-            color: white; 
-            padding: 20px; 
-            border: none; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            width: 180px; 
-            font-weight: bold; 
-            transition: 0.3s;
-        }
-        .menu-kart:hover { transform: translateY(-5px); background: #000055; }
-
-        /* Bölümler */
-        .bolum { padding-top: 80px; display: none; min-height: 100vh; }
+        body { background-color: #F5F5DC; color: #000033; font-family: sans-serif; text-align: center; margin: 0; }
+        header { background: #000033; color: white; padding: 15px; display: none; position: fixed; width: 100%; top: 0; z-index: 100; }
+        #giris-ekrani { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .menu-izgara { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
+        .menu-kart { background: #000033; color: white; padding: 20px; border: none; border-radius: 8px; cursor: pointer; width: 180px; font-weight: bold; }
+        .bolum { padding-top: 80px; display: none; }
         .aktif { display: block !important; }
-
-        /* Galeri ve Kartlar */
         .galeri { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px; }
-        .kart { 
-            background: white; 
-            padding: 10px; 
-            border-radius: 10px; 
-            width: 250px; 
-            cursor: pointer; 
-            transition: 0.3s; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .kart:hover { transform: scale(1.05); }
+        .kart { background: white; padding: 10px; border: 1px solid #ddd; border-radius: 10px; width: 250px; cursor: pointer; }
         .kart img { width: 100%; height: auto; border-radius: 5px; }
-
-        /* Lightbox (Resim Büyütme) */
-        #lightbox {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 51, 0.95);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
+        .kitap-link { display: block; margin-top: 10px; color: #000033; text-decoration: none; font-weight: bold; font-size: 0.9em; }
+        #lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 51, 0.9); z-index: 2000; justify-content: center; align-items: center; }
         #lightbox-icerik { max-width: 90%; max-height: 80%; border-radius: 10px; }
-        #kapat-butonu {
-            position: absolute;
-            top: 20px; right: 30px;
-            color: white; font-size: 40px; cursor: pointer;
-        }
+        #kapat-butonu { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div id="lightbox" onclick="lightboxKapat()">
+<div id="lightbox" onclick="this.style.display='none'">
     <span id="kapat-butonu">&times;</span>
     <img id="lightbox-icerik" src="">
 </div>
@@ -98,7 +39,7 @@
 </div>
 
 <header id="ana-header">
-    <div onclick="anaMenuyeDon()" style="cursor:pointer; font-weight:bold; font-size: 1.2rem;">🏠 ERZİNCANIN KALEMLERİ</div>
+    <div onclick="anaMenuyeDon()" style="cursor:pointer; font-weight:bold;">🏠 ERZİNCANIN KALEMLERİ</div>
 </header>
 
 <div id="yazarlar-bolumu" class="bolum">
@@ -126,58 +67,55 @@
     const yazarNolar = [1, 6, 16, 18, 22, 25, 29];
     const eserNolar = [2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 19, 20, 21, 23, 24, 26, 27, 28, 30];
 
-    // Bölüm değiştirme
+    // Kitap Yurdu linkleri ve isimleri için yardımcı obje (Örnek)
+    const kitapBilgileri = {
+        2: { ad: "Gökyüzüne Fısılda", link: "https://www.kitapyurdu.com/" },
+        3: { ad: "Yaratıcı Kalemler", link: "https://www.kitapyurdu.com/" }
+    };
+
     function bolumAc(id) {
         document.getElementById('giris-ekrani').style.display = 'none';
         document.getElementById('ana-header').style.display = 'block';
         document.querySelectorAll('.bolum').forEach(b => b.classList.remove('aktif'));
         document.getElementById(id).classList.add('aktif');
-        window.scrollTo(0, 0);
     }
 
-    // Ana menüye dönüş
     function anaMenuyeDon() {
         document.getElementById('giris-ekrani').style.display = 'flex';
         document.getElementById('ana-header').style.display = 'none';
         document.querySelectorAll('.bolum').forEach(b => b.classList.remove('aktif'));
     }
 
-    // Resim büyütme
     function gorselBuyut(src) {
         const lb = document.getElementById('lightbox');
-        const lbImg = document.getElementById('lightbox-icerik');
-        lbImg.src = src;
+        document.getElementById('lightbox-icerik').src = src;
         lb.style.display = 'flex';
     }
 
-    function lightboxKapat() {
-        document.getElementById('lightbox').style.display = 'none';
-    }
-
-    // Galeri oluşturma (DİKKAT: Resimler 'img' klasöründe olmalı)
-    function galeriKur(idListesi, containerId) {
+    function galeriKur(idListesi, containerId, tip) {
         const container = document.getElementById(containerId);
-        if (!container) return;
         container.innerHTML = "";
-
-        idListesi.forEach((n) => {
+        idListesi.forEach(n => {
             const imgSrc = `img/${base}${n}.png`;
             const kart = document.createElement('div');
             kart.className = 'kart';
-            kart.onclick = function() { gorselBuyut(imgSrc); };
             
-            // Eğer resim yoksa kartı gizlemez, hata mesajı gösterir (kontrol için)
-            kart.innerHTML = `<img src="${imgSrc}" onerror="this.src='https://via.placeholder.com/250x350?text=Resim+Bulunamadi'">`;
+            let icerik = `<img src="${imgSrc}" onclick="gorselBuyut('${imgSrc}')" onerror="this.src='https://via.placeholder.com/200x300?text=Resim+Yok'">`;
+            
+            // Eğer eserse ve bilgisi varsa link ekle
+            if(tip === 'eser' && kitapBilgileri[n]) {
+                icerik += `<a href="${kitapBilgileri[n].link}" target="_blank" class="kitap-link">📖 ${kitapBilgileri[n].ad}</a>`;
+            }
+            
+            kart.innerHTML = icerik;
             container.appendChild(kart);
         });
     }
 
-    // Sayfa yüklenince galerileri hazırla
-    window.onload = function() {
-        galeriKur(yazarNolar, 'yazarlar-galeri');
-        galeriKur(eserNolar, 'eserler-galeri');
+    window.onload = () => {
+        galeriKur(yazarNolar, 'yazarlar-galeri', 'yazar');
+        galeriKur(eserNolar, 'eserler-galeri', 'eser');
     };
 </script>
-
 </body>
 </html>
