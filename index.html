@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ERZİNCANIN KALEMLERİ</title>
+    <title>ERZİNCANIN KALEMLERİ - PROJE</title>
     <style>
         body { 
             background-color: #F5F5DC; 
-            /* Arka plan deseni: Kalem, Kitap, Kağıt emojileri */
+            /* Edebiyat temalı arka plan deseni */
             background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000033' fill-opacity='0.07'%3E%3Ctext x='10' y='25' font-size='14'%3E🖋️%3C/text%3E%3Ctext x='60' y='30' font-size='14'%3E📖%3C/text%3E%3Ctext x='35' y='60' font-size='12'%3E✏️%3C/text%3E%3Ctext x='80' y='70' font-size='14'%3E📜%3C/text%3E%3Ctext x='15' y='85' font-size='12'%3E🧼%3C/text%3E%3Ctext x='55' y='90' font-size='12'%3E✒️%3C/text%3E%3C/g%3E%3C/svg%3E");
             background-attachment: fixed;
             color: #000033; font-family: 'Segoe UI', sans-serif; text-align: center; margin: 0; user-select: none;
@@ -15,8 +15,9 @@
 
         header { background: #000033; color: white; padding: 15px; display: none; position: fixed; width: 100%; top: 0; z-index: 100; }
         #giris-ekrani { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .menu-izgara { display: flex; flex-direction: column; gap: 10px; width: 280px; margin-top: 20px; }
-        .menu-kart { background: #000033; color: white; padding: 15px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
+        
+        .menu-izgara { display: flex; flex-direction: column; gap: 12px; width: 280px; margin-top: 20px; }
+        .menu-kart { background: #000033; color: white; padding: 15px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold; font-size: 1rem; }
         
         .bolum { padding: 80px 15px 40px; display: none; min-height: 100vh; }
         .aktif { display: block !important; }
@@ -24,79 +25,50 @@
         .galeri { display: flex; flex-direction: column; align-items: center; gap: 20px; }
         .kart { 
             background: white; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; 
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-align: left; border-left: 5px solid #000033;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-align: left; position: relative;
         }
-        .kart img { width: 100%; border-radius: 10px; margin-top: 10px; cursor: pointer; }
-        
-        #lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; }
-        #lightbox img { max-width: 90%; max-height: 90%; }
+        .kart img { width: 100%; border-radius: 10px; margin-top: 10px; }
+
+        /* Admin Alanı */
+        .admin-kutu { display: none; background: #fff; padding: 20px; border-radius: 15px; border: 2px dashed #000033; width: 90%; max-width: 500px; margin: 0 auto 20px auto; }
+        textarea { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ccc; font-family: inherit; box-sizing: border-box; }
+        .yayimla-btn { background: #000033; color: white; border: none; padding: 12px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-<div id="lightbox" onclick="this.style.display='none'"><img id="lb-img" src=""></div>
-
 <div id="giris-ekrani">
-    <h1 onclick="anaMenuyeDon()" style="cursor:pointer">🖋️ ERZİNCANIN KALEMLERİ</h1>
+    <h1 onclick="adminKontrol()" style="cursor:pointer">🖋️ ERZİNCANIN KALEMLERİ</h1>
     <div class="menu-izgara">
-        <button class="menu-kart" onclick="bolumAc('yazarlar-bolumu')">👤 YAZARLAR</button>
-        <button class="menu-kart" onclick="bolumAc('eserler-bolumu')">📚 ESERLER</button>
-        <button class="menu-kart" onclick="bolumAc('yazilar-bolumu')">🖋️ YAZILAR</button>
-        <button class="menu-kart" onclick="bolumAc('yakinda-bolumu')">✨ YAKINDA</button>
+        <button class="menu-kart" onclick="bolumAc('yazarlar')">👤 YAZARLAR</button>
+        <button class="menu-kart" onclick="bolumAc('eserler')">📚 ESERLER</button>
+        <button class="menu-kart" onclick="bolumAc('yazilar')">🖋️ YAZILAR</button>
+        <button class="menu-kart" onclick="bolumAc('yakinda')">✨ YAKINDA</button>
     </div>
 </div>
 
 <header id="ana-header"><div onclick="anaMenuyeDon()" style="cursor:pointer; font-weight:bold;">🖋️ ERZİNCANIN KALEMLERİ</div></header>
 
-<div id="yazarlar-bolumu" class="bolum"><h2>👤 YAZARLARIMIZ</h2><div id="yazarlar-galeri" class="galeri"></div></div>
-<div id="eserler-bolumu" class="bolum"><h2>📚 ESERLERİMİZ</h2><div id="eserler-galeri" class="galeri"></div></div>
+<div id="yazarlar" class="bolum"><h2>👤 YAZARLARIMIZ</h2><div id="yazarlar-galeri" class="galeri"></div></div>
+<div id="eserler" class="bolum"><h2>📚 ESERLERİMİZ</h2><div id="eserler-galeri" class="galeri"></div></div>
 
-<div id="yazilar-bolumu" class="bolum">
+<div id="yazilar" class="bolum">
     <h2>🖋️ YAZILAR</h2>
-    <div id="yazi-liste" class="galeri"></div>
+    <div id="admin-panel" class="admin-kutu">
+        <textarea id="yazi-metin" rows="4" placeholder="Hocam, buraya bir şeyler yazın..."></textarea>
+        <button class="yayimla-btn" onclick="yaziEkle()">Yayınla</button>
+    </div>
+    <div id="yazi-liste" class="galeri">
+        <div class="kart"><small>01.04.2026</small><p>Sitemize hoş geldiniz hocam! Bu bir örnek yazıdır.</p></div>
+    </div>
 </div>
 
-<div id="yakinda-bolumu" class="bolum">
-    <h2>✨ YAKINDA</h2>
-    <div id="yakinda-liste" class="galeri"></div>
-</div>
+<div id="yakinda" class="bolum"><h2>✨ YAKINDA</h2><div class="galeri"><div class="kart"><p>Yeni projeler yolda...</p></div></div></div>
 
 <script>
-    // --- BURASI YAZI EKLEME ALANI (HERKES GÖRÜR) ---
-    const YAZILARIMIZ = [
-        { tarih: "01.04.2026", metin: "Erzincan'ın kalemleri sitemize hoş geldiniz! Burada edebiyat konuşacağız.", resim: "" },
-        { tarih: "02.04.2026", metin: "Yeni yazarlarımız yakında sisteme eklenecektir.", resim: "https://via.placeholder.com/500x300?text=Erzincan+Manzarası" }
-    ];
+    let clickCount = 0;
 
-    const YAKINDA_GELECEK = [
-        { tarih: "Duyuru", metin: "Büyük çekiliş çok yakında!", resim: "" }
-    ];
-
-    // Galeri Ayarları
-    const base = "1774539616720-ab570c70-dd49-4001-92c9-e7ad6553f8e4_";
-    const yazarNolar = [1, 6, 16, 18, 22, 25, 29];
-    const eserNolar = [2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 19, 20, 21, 23, 24, 26, 27, 28, 30];
-
-    function listele() {
-        // Yazıları listele
-        document.getElementById('yazi-liste').innerHTML = YAZILARIMIZ.map(y => `
-            <div class="kart">
-                <small style="color:#888"><b>${y.tarih}</b></small>
-                <p style="margin:10px 0">${y.metin}</p>
-                ${y.resim ? `<img src="${y.resim}" onclick="ac('${y.resim}')">` : ''}
-            </div>
-        `).join('');
-
-        // Yakında gelecekleri listele
-        document.getElementById('yakinda-liste').innerHTML = YAKINDA_GELECEK.map(y => `
-            <div class="kart">
-                <small style="color:#888"><b>${y.tarih}</b></small>
-                <p style="margin:10px 0">${y.metin}</p>
-                ${y.resim ? `<img src="${y.resim}" onclick="ac('${y.resim}')">` : ''}
-            </div>
-        `).join('');
-    }
-
+    // BÖLÜM AÇMA
     function bolumAc(id) {
         document.getElementById('giris-ekrani').style.display = 'none';
         document.getElementById('ana-header').style.display = 'block';
@@ -111,18 +83,51 @@
         document.querySelectorAll('.bolum').forEach(b => b.classList.remove('aktif'));
     }
 
-    function ac(src) { document.getElementById('lb-img').src = src; document.getElementById('lightbox').style.display = 'flex'; }
+    // ADMİN GİRİŞİ (Çift Tıklama Mantığı)
+    function adminKontrol() {
+        clickCount++;
+        if (clickCount === 2) {
+            const sifre = prompt("Yönetici Şifresi:");
+            if(sifre === "1234") {
+                document.getElementById('admin-panel').style.display = 'block';
+                alert("Yönetici modu açıldı! 'Yazılar' bölümüne gidip yazı ekleyebilirsiniz.");
+            }
+            clickCount = 0;
+        }
+        setTimeout(() => { clickCount = 0; }, 500);
+    }
 
-    function galeriKur(idler, divId) {
+    // YAZI EKLEME (Sayfa yenilenene kadar durur)
+    function yaziEkle() {
+        const metin = document.getElementById('yazi-metin').value;
+        if(!metin) return;
+        const tarih = new Date().toLocaleDateString('tr-TR');
+        const liste = document.getElementById('yazi-liste');
+        
+        const yeniKart = `
+            <div class="kart">
+                <small style="color:#888">${tarih}</small>
+                <p style="margin-top:10px">${metin}</p>
+            </div>
+        `;
+        liste.innerHTML = yeniKart + liste.innerHTML;
+        document.getElementById('yazi-metin').value = "";
+    }
+
+    // Galeri Kurulumu (Resimlerin varsa görünür)
+    const base = "1774539616720-ab570c70-dd49-4001-92c9-e7ad6553f8e4_";
+    const yazarNolar = [1, 6, 16, 18, 22, 25, 29];
+    const eserNolar = [2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17, 19, 20, 21, 23, 24, 26, 27, 28, 30];
+
+    function galeriDoldur(idler, divId) {
         document.getElementById(divId).innerHTML = idler.map(n => `
-            <div class="kart"><img src="./img/${base}${n}.png" onclick="ac(this.src)" onerror="this.parentElement.style.display='none'"></div>
+            <div class="kart"><img src="./img/${base}${n}.png" onerror="this.parentElement.style.display='none'"></div>
         `).join('');
     }
 
     window.onload = () => {
-        galeriKur(yazarNolar, 'yazarlar-galeri');
-        galeriKur(eserNolar, 'eserler-galeri');
-        listele();
+        galeriDoldur(yazarNolar, 'yazarlar-galeri');
+        galeriDoldur(eserNolar, 'eserler-galeri');
     };
 </script>
 </body>
